@@ -1,0 +1,118 @@
+2. Enable pulling images from DockerHub as an authenticated user to lower the chance of hitting the pull limit. What kind of resource do you need 
+to create?
+Answer: Create a docker-registry Secret (ImagePullSecret) and reference it using imagePullSecrets. This allows Kubernetes to authenticate to 
+Docker Hub and avoid anonymous pull rate limits.
+
+You need to create an Image Pull Secret (a docker-registry Secret) and reference it using imagePullSecrets.
+Docker Hub limits anonymous image pulls. If you authenticate with your Docker Hub account, Kubernetes can pull images as an authenticated user, 
+greatly reducing the chance of hitting the rate limit.
+
+kubectl create secret docker-registry dockerhub-secret \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=<USERNAME> \
+  --docker-password=<PASSWORD> \
+  --docker-email=<EMAIL>
+
+spec:
+  imagePullSecrets:
+    - name: dockerhub-secret
+
+Create a docker-registry Secret (ImagePullSecret) containing Docker Hub credentials and reference it with imagePullSecrets so Kubernetes 
+authenticates when pulling images and avoids anonymous Docker Hub pull limits.
+
+5. Explain what the CHANGE-CAUSE column shows and how to populate it.
+Answer: The CHANGE-CAUSE column shows the reason or description of a Deployment revision. It is populated by adding the annotation 
+kubernetes.io/change-cause before or during an update.
+
+6. Explain the effect of RollingUpdate with maxSurge:1 and maxUnavailable:0.
+Answer: Kubernetes creates one extra Pod before removing an old one, while ensuring no Pods become unavailable. This provides zero downtime during updates.
+
+7. When is Recreate required instead of RollingUpdate?
+Answer: Recreate is used when old and new versions cannot run at the same time, for example after incompatible database schema changes. It causes 
+downtime because all old Pods are deleted before new ones are created.
+
+9. Explain revisionHistoryLimit:3.
+Answer: Kubernetes keeps only the last 3 old ReplicaSets, allowing rollbacks only to those versions. Older ReplicaSets are deleted automatically.
+
+10. Why do old Pods keep serving traffic if the new image doesn't exist.
+Answer: The rollout pauses because Kubernetes cannot pull the new image. The old Pods remain running so the application stays available.
+
+11. Explain the Deployment → ReplicaSet → Pod relationship.
+Answer: A Deployment creates and manages a ReplicaSet, and the ReplicaSet creates and maintains Pods. Selectors use labels to determine which Pods 
+belong to which ReplicaSet and Deployment.
+
+12. What object does kubectl expose create, and how is its selector derived?
+Answer: It creates a Service whose selector is automatically copied from the Deployment's Pod labels. The Service forwards traffic to matching Pods.
+
+13. How do sidecar containers share the Pod?
+Answer: Containers in the same Pod share the same IP address, network namespace, and mounted volumes. They can communicate through localhost and share files.
+
+14. Why does a Pod stay Pending if no node matches nodeSelector?
+Answer: Kubernetes cannot find a node with the required label, so it cannot schedule the Pod. The Pod remains in the Pending state until a matching node exists.
+
+15. Bare Pod vs Deployment-managed Pod.
+Answer: A bare Pod is permanently deleted when removed. A Deployment immediately creates a replacement Pod to maintain the desired number of replicas.
+
+17. Why does a DaemonSet run one Pod per node?
+Answer: A DaemonSet automatically schedules exactly one Pod on every eligible node. It is commonly used for monitoring, logging, or security agents.
+
+21. StatefulSet vs Deployment.
+Answer: StatefulSets create and delete Pods in a fixed order and give them stable names and storage. Deployments create Pods in any order and 
+treat them as interchangeable.
+
+25. Why use subPath and what is its caveat?
+Answer: subPath mounts only one file from a ConfigMap instead of the whole directory. Updates to the ConfigMap are not automatically reflected
+in the mounted file.
+
+27. What happens to PVCs after deleting a StatefulSet?
+Answer: StatefulSets create one PVC per replica. By default, deleting the StatefulSet does not delete the PVCs, preventing accidental data loss.
+
+29. What does readOnly:true do?
+Answer: It makes the mounted volume read-only. Any attempt to write to the volume fails with a permission error.
+
+30. What happens if emptyDir exceeds sizeLimit?
+Answer: Kubernetes prevents further writes once the limit is reached, causing write operations to fail. This prevents a Pod from consuming 
+unlimited local storage.
+
+31. Base64 vs encryption.
+Answer: Kubernetes stores Secret values Base64 encoded, not encrypted. Base64 only changes the format—it does not provide security.
+
+33. Where is a TLS Secret consumed?
+Answer: A kubernetes.io/tls Secret is typically used by an Ingress (or OpenShift Route) to provide HTTPS certificates.
+
+34. Secret as volume vs environment variables.
+Answer: Mounting Secrets as files is generally more secure because they are not visible in process environments. Environment variables are 
+easier to use but may be exposed through process listings or debugging tools.
+
+36. When is imagePullSecret required?
+Answer: It is required when pulling images from private container registries or when authentication is needed to avoid Docker Hub rate limits.
+
+40. Why is EXTERNAL-IP pending on Minikube?
+Answer: Minikube has no real cloud load balancer, so the external IP stays pending. Running minikube tunnel simulates a cloud LoadBalancer.
+
+41. Headless Service.
+Answer: A headless Service (clusterIP: None) returns the IP address of each Pod instead of one virtual IP. It is mainly used with StatefulSets.
+
+42. How are Endpoints populated?
+Answer: Kubernetes automatically adds Pods whose labels match the Service selector. Those Pods become the Service's Endpoints or EndpointSlices.
+
+43. Cross-namespace DNS.
+Answer: Short service names work only inside the same namespace. From another namespace you must use the full DNS name (service.namespace.svc.cluster.local).
+
+44. Port-forward to Service vs Pod.
+Answer: Port-forwarding to a Pod connects directly to one Pod, while port-forwarding to a Service forwards traffic through the Service to one of 
+its matching Pods.
+
+45. port vs targetPort vs nodePort.
+Answer: port is the Service port, targetPort is the container's listening port, and nodePort is the port exposed on every cluster node for external access.
+
+48. How do you diagnose why a Pod can't reach a Service?
+Answer: Check DNS resolution, verify the Service exists, ensure Endpoints are populated, confirm selector labels match the Pods, verify readiness 
+probes pass, and check that the correct ports are configured.
+
+52. Why configure a startup probe?
+Answer: A startup probe gives slow applications enough time to start before liveness checks begin. This prevents Kubernetes from restarting healthy 
+applications that simply need longer to initialize.
+
+53. What happens if no probes are defined?
+Answer: Kubernetes assumes the container is healthy as long as it is running. It will not automatically detect application failures unless the container exits.
