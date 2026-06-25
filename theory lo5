@@ -1,0 +1,127 @@
+1. What is wrong with -p 80:8080 for nginx?
+Answer: The port mapping is reversed. Nginx listens on port 80 inside the container, so if you want to access it on host port 8080, use -p 8080:80.
+
+2. Why does MySQL exit during initialization?
+Answer: The required environment variable MYSQL_ROOT_PASSWORD has no value. MySQL refuses to start without a root password.
+
+3. Why is -p ignored when using --network host?
+Answer: In host networking, the container uses the host's network directly. Since there is no network isolation, port mapping (-p) has no effect.
+
+4. Why does BusyBox immediately exit?
+Answer: BusyBox has no long-running process, so the container exits normally (Exited (0)). Add a command such as sleep infinity or sleep 1d to keep it running.
+
+5. Why can't you view logs after using --rm?
+Answer: The --rm option automatically deletes the container when it exits. Since the container no longer exists, its logs cannot be viewed afterward.
+
+6. Why doesn't MySQL become healthy with --memory 8m?
+Answer: The memory limit is far too low for MySQL. The database is killed because it cannot allocate enough memory.
+
+7. Why can't two containers resolve each other's names on the default network?
+Answer: Podman does not provide automatic container name resolution on the default network. Place both containers on the same user-created network.
+
+8. Why are mounted files not visible with SELinux?
+Answer: The bind mount is missing the :Z (or :z) SELinux label. This allows the container to access the mounted directory.
+
+10. Why does apt-get install fail?
+Answer: Package lists have not been updated. Run apt-get update before installing packages.
+
+11. Shell form vs exec form of CMD
+Answer: The shell form (CMD python app.py) starts a shell process that does not handle signals properly. The exec form (CMD ["python","app.py"]) 
+lets the application receive signals directly.
+
+12. Why reorder COPY and npm install?
+Answer: Copy package.json first, run npm install, then copy the remaining files. This allows Docker to reuse cached layers when only application code changes.
+
+13. What did setting PATH break?
+Answer: Setting PATH=/app/bin replaced the system PATH, so commands like curl and sh cannot be found. Always append instead of replacing the existing PATH.
+
+15. What is wrong with EXPOSE and port mapping?
+Answer: The application listens on port 3000, but the host forwards traffic to container port 8080. EXPOSE only documents the intended port;
+it does not publish it.
+
+16. How do you reduce image size?
+Answer: Remove package cache in the same RUN layer (e.g., apt-get clean && rm -rf /var/lib/apt/lists/*). This prevents unnecessary files from 
+remaining in the image.
+
+17. Why does USER cause permission errors?
+Answer: The non-root user lacks permission to copy files or install packages. Perform installation as root, then switch to the application user afterward.
+
+18. How does a multi-stage build help?
+Answer: The first stage compiles the application, while the second stage copies only the compiled binary into a clean image. This removes build
+tools and greatly reduces image size.
+
+19. Why is a Pod Pending?
+Answer: The Pod cannot be scheduled because of insufficient resources, missing PVCs, an incorrect nodeSelector, or other scheduling constraints. kubectl 
+describe pod shows the exact reason in the Events section.
+
+20. Why does a malformed YAML fail?
+Answer: Incorrect indentation changes the YAML structure, making the manifest invalid. Kubernetes reports a parsing or validation error.
+
+21. Why does ImagePullBackOff occur?
+Answer: Kubernetes cannot pull the image because of a wrong image name, missing tag, private registry authentication failure, or network issue.
+
+22. Why does CrashLoopBackOff occur?
+Answer: The application repeatedly crashes after starting. Use kubectl logs --previous to identify and fix the underlying application error.
+
+23. What is OOMKilled?
+Answer: The container exceeded its memory limit and the Linux kernel terminated it. Increase the memory limit or reduce the application's memory usage.
+
+24. Why are Pods never Ready?
+Answer: The readiness probe is failing, so Kubernetes does not send traffic to the Pods. Fix either the probe configuration or the application itself.
+
+25. Why does a Service return nothing?
+Answer: The Service selector does not match the Pod labels, so no Endpoints are created. Update the labels or selector so they match.
+
+26. Selector vs template labels mismatch
+Answer: A Deployment's selector must exactly match the Pod template labels. Kubernetes rejects the manifest if they differ.
+
+27. Why is a Pod Pending because of resources?
+Answer: The requested CPU or memory exceeds what any node can provide. Reduce the resource requests or add larger nodes.
+
+28. Why does a missing PVC prevent startup?
+Answer: The Pod cannot mount storage because the referenced PVC does not exist. Create the PVC or correct its name.
+
+29. Why does an Ubuntu container exit immediately?
+Answer: Ubuntu has no default long-running process. Add a command such as sleep infinity or start an application.
+
+30. Why use kubectl get events?
+Answer: Events show the complete history of scheduling, image pulls, mounts, probe failures, and other important actions, making them one of the 
+best debugging tools.
+
+31. Why use kubectl exec?
+Answer: It allows you to enter a running container to inspect DNS, configuration files, networking, and application behavior.
+
+32. Why use an ephemeral debug container?
+Answer: It lets you troubleshoot containers that have no shell or debugging tools installed without modifying the original container.
+
+34. Why is a Node NotReady?
+Answer: Common causes include a stopped kubelet, disk pressure, networking (CNI) problems, or resource exhaustion. kubectl describe node usually 
+indicates the cause.
+
+35. Why can a Pod stay Terminating?
+Answer: Finalizers or a long termination grace period can delay deletion. Force deletion removes the Pod immediately but may interrupt cleanup or 
+leave resources inconsistent.
+
+36. Wrong apiVersion/kind pairing
+Answer: Every Kubernetes resource requires the correct API group and kind. For example, Pods use apiVersion: v1, while Deployments use apps/v1.
+
+37. Why does CreateContainerConfigError occur?
+Answer: Kubernetes cannot find a required ConfigMap key, Secret, or configuration reference. Create the missing resource or correct the key name.
+
+38. Why can't a Pod mount a Secret from another namespace?
+Answer: Secrets are namespace-scoped and cannot be shared directly across namespaces. Create the Secret in the same namespace as the Pod.
+
+39. What does ProgressDeadlineExceeded mean?
+Answer: Kubernetes waited too long for a Deployment rollout to complete. The cause is usually failing Pods, image pull errors, or readiness probe failures.
+
+40. Why use --dry-run=server or --validate=true?
+Answer: They validate the manifest before creating resources, catching YAML errors, invalid fields, and typos early.
+
+41. How do you diagnose a Pod that can't reach a database Service?
+Answer: Verify in order: the Pod is running, the Service exists, Endpoints are populated, DNS resolves correctly, and the correct port is being used.
+
+42. Why inspect lastState and restartCount?
+Answer: They show why a container restarted (e.g., OOMKilled or crash) and how often it has restarted, helping identify recurring failures.
+
+43. Compare OpenShift Route and Kubernetes Ingress.
+Answer: Ingress is the standard Kubernetes resource for exposing HTTP/HTTPS services, while OpenShift Route is Red Hat's built-in alternative that provides similar functionality with simpler configuration and integrated TLS support. Routes are OpenShift-specific, whereas Ingress is portable across Kubernetes distributions.
