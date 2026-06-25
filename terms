@@ -1,0 +1,85 @@
+Container	A lightweight package containing an application and its dependencies.
+Image	A template used to create containers.
+Docker	Container engine that builds and runs containers using a daemon.
+Podman	Docker alternative that is daemonless and supports rootless containers.
+Docker Compose	Runs multiple containers on one machine using a YAML file.
+Docker Swarm	Docker's built-in orchestration platform for multiple machines.
+Kubernetes (K8s)	Container orchestration platform that manages containers across many servers.
+k3s	Lightweight Kubernetes distribution for small clusters and edge devices.
+OpenShift	Red Hat's enterprise Kubernetes platform with extra tools and security.
+Managed Kubernetes	Kubernetes managed by a cloud provider (EKS, AKS, GKE).
+Pod	The smallest Kubernetes object; contains one or more containers.
+Deployment	Manages Pods and supports scaling, updates, and rollbacks.
+ReplicaSet	Ensures the desired number of Pods are running.
+Service	Provides a stable IP and DNS name for Pods.
+ClusterIP	Internal Service accessible only within the cluster.
+NodePort	Exposes a Service through a port on every node.
+LoadBalancer	Exposes a Service using a cloud load balancer.
+Headless Service	Gives direct access to individual Pods instead of one virtual IP.
+StatefulSet	Manages stateful applications with stable names and storage.
+DaemonSet	Runs exactly one Pod on every node.
+Job	Runs a task once until it completes successfully.
+CronJob	Runs Jobs on a schedule (like Linux cron).
+Namespace	A logical partition of a Kubernetes cluster.
+Label	A key-value pair used to organize Kubernetes objects.
+Selector	Finds objects based on matching labels.
+NodeSelector	Forces Pods to run only on nodes with specific labels.
+ConfigMap	Stores non-sensitive configuration data.
+Secret	Stores sensitive data such as passwords or certificates.
+Persistent Volume (PV)	The actual storage resource in Kubernetes.
+Persistent Volume Claim (PVC)	A request for storage made by a Pod.
+StorageClass	Defines the type of storage to provision.
+CSI (Container Storage Interface)	Standard interface between Kubernetes and storage providers.
+Volume	Storage mounted inside a Pod.
+emptyDir	Temporary shared storage that exists while the Pod runs.
+Init Container	Runs before the main container to perform setup tasks.
+Sidecar Container	Extra container in the same Pod providing helper functionality (logging, proxy, etc.).
+Rolling Update	Gradually replaces old Pods with new ones without downtime.
+Rollback	Restores the previous application version after a failed update.
+RollingUpdate Strategy	Updates Pods gradually while keeping the application available.
+Recreate Strategy	Deletes all old Pods before creating new ones, causing downtime.
+Liveness Probe	Checks if an application is alive; restarts it if necessary.
+Readiness Probe	Checks if an application is ready to receive traffic.
+Startup Probe	Gives slow-starting applications extra time before health checks begin.
+Horizontal Pod Autoscaler (HPA)	Automatically changes the number of Pods based on load.
+Cluster Autoscaler	Automatically adds or removes cluster nodes.
+CNI (Container Network Interface)	Plugin that provides networking for Kubernetes Pods.
+Ingress	Routes external HTTP/HTTPS traffic into the cluster.
+Route (OpenShift)	OpenShift's version of Ingress for exposing applications.
+ImagePullSecret	Secret used to authenticate to private container registries.
+YAML Manifest	Configuration file describing Kubernetes resources.
+kubectl	Command-line tool used to manage Kubernetes clusters.
+Podman CLI	Command-line tool used to manage Podman containers.
+Containerfile/Dockerfile	File describing how to build a container image.
+FROM	Specifies the base image.
+RUN	Executes commands during image build.
+COPY	Copies files into the image.
+WORKDIR	Sets the working directory inside the image.
+CMD	Default command executed when the container starts.
+ENTRYPOINT	Defines the main executable of the container.
+EXPOSE	Documents which port the application listens on (does not publish it).
+ENV	Defines environment variables inside the image.
+USER	Specifies which Linux user runs the container.
+Daemon	Background process managing containers (e.g., Docker's dockerd).
+Daemonless	No background daemon required (Podman).
+Rootless	Runs containers without root privileges for better security.
+Microservices	Application split into many small independent services.
+Monolith	Application built as one large program.
+Orchestration	Automated management of container deployment, scaling, networking, and recovery.
+CI/CD	Continuous Integration and Continuous Deployment pipeline for automated software delivery.
+S2I (Source-to-Image)	OpenShift feature that builds container images directly from source code.
+Operator	Kubernetes extension that automates management of complex applications.
+CRD (Custom Resource Definition)	Lets Kubernetes support custom resource types.
+Vendor Lock-in	Dependence on one vendor's technology, making migration harder.
+Autoscaling	Automatically adjusts resources according to demand.
+High Availability (HA)	System remains available even if some components fail.
+Resilience	Ability to recover automatically from failures.
+Stateful Application	Application that stores persistent data (e.g., databases).
+Stateless Application	Application that stores no persistent state (e.g., web server).
+Rolling Restart	Restart Pods gradually without downtime.
+OOMKilled	Container killed because it exceeded its memory limit.
+CrashLoopBackOff	Container repeatedly crashes and Kubernetes delays restarts.
+ImagePullBackOff	Kubernetes cannot download the container image.
+Pending	Pod cannot be scheduled yet (insufficient resources, missing PVC, wrong nodeSelector, etc.).
+Completed	Container finished successfully and exited normally.
+Terminating	Pod is shutting down but has not been fully removed yet.
