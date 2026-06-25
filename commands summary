@@ -1,0 +1,90 @@
+LO4 Questions 1–18 (Deployments, Pods, Rollouts)
+Command	What it's for
+kubectl create deployment	Create Deployment
+kubectl run	Create Pod
+kubectl apply -f file.yaml	Create/update from YAML
+kubectl get pods	List Pods
+kubectl get deployments	List Deployments
+kubectl get rs	List ReplicaSets
+kubectl scale deployment	Change replicas
+kubectl edit deployment	Edit Deployment
+kubectl set image	Update image
+kubectl rollout status	Watch rollout
+kubectl rollout history	Show rollout history
+kubectl rollout undo	Rollback
+kubectl expose deployment	Create Service
+kubectl logs	View logs
+kubectl exec -it	Shell inside Pod
+kubectl describe	Show details & events
+
+LO4 Questions 19–37 (Jobs, StatefulSets, Storage, Secrets)
+Command	What it's for
+kubectl create job	Create Job
+kubectl create cronjob	Create CronJob
+kubectl get jobs	List Jobs
+kubectl get cronjobs	List CronJobs
+kubectl get statefulsets	List StatefulSets
+kubectl get daemonsets	List DaemonSets
+kubectl get storageclass	List StorageClasses
+kubectl get pv	List Persistent Volumes
+kubectl get pvc	List Persistent Volume Claims
+kubectl create configmap	Create ConfigMap
+kubectl create secret generic	Create Secret
+kubectl create secret tls	TLS Secret
+kubectl create secret docker-registry	Image pull Secret
+
+LO4 Questions 38–53 (Networking & Probes)
+Command	What it's for
+kubectl get svc	List Services
+kubectl expose deployment	Create Service
+kubectl get endpoints	Check Service endpoints
+kubectl get endpointslices	EndpointSlice info
+kubectl port-forward	Access Pod/Service locally
+kubectl run tmp --rm -it --image=busybox -- sh	Debug Pod
+nslookup	Test DNS
+wget / curl / nc	Test connectivity
+minikube service	Open NodePort
+minikube tunnel	Enable LoadBalancer
+minikube ip	Show Minikube IP
+
+Troubleshooting Questions (LO4 Practical)
+Command	What it's for
+kubectl describe pod	First debugging command
+kubectl logs	Read logs
+kubectl logs --previous	Previous crash logs
+kubectl exec -it	Debug inside Pod
+kubectl debug	Debug distroless container
+kubectl get events	Show cluster events
+kubectl get pod -o yaml	Inspect Pod spec
+kubectl get pod -o jsonpath	Specific Pod values
+kubectl describe deployment	Deployment problems
+kubectl describe node	Node problems
+kubectl apply --dry-run=server	Validate YAML
+kubectl apply --validate=true	Check manifest
+kubectl delete pod --grace-period=0 --force	Force delete Pod
+
+Podman Commands (Questions 1–9)
+podman run	Start container
+podman ps	Running containers
+podman ps -a	All containers
+podman logs	Container logs
+podman inspect	Inspect container
+podman exec -it	Shell inside container
+podman stop	Stop container
+podman rm	Remove container
+podman images	List images
+podman rmi	Remove image
+podman build	Build image
+podman network create	Create network
+
+Dockerfile/Containerfile Questions (10–18)
+FROM	Base image
+RUN	Execute command during build
+COPY	Copy files
+ADD	Copy/extract files
+WORKDIR	Set working directory
+CMD	Default command
+ENTRYPOINT	Main executable
+ENV	Environment variable
+EXPOSE	Document listening port
+USER	Run as specific user
